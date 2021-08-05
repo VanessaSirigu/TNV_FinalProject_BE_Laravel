@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\MovieRatingCollection;
+use App\Http\Resources\MovieRatingResource;
 use App\Models\MovieRating;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class MovieRatingController extends Controller
 {
@@ -14,7 +18,7 @@ class MovieRatingController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(new MovieRatingCollection(MovieRating::all()), Response::HTTP_OK);
     }
 
     /**
@@ -25,7 +29,9 @@ class MovieRatingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $movieRating = MovieRating::create($request->only(['movie_id', 'user_id', 'rating']));
+
+        return new MovieRatingResource($movieRating);
     }
 
     /**
@@ -36,7 +42,7 @@ class MovieRatingController extends Controller
      */
     public function show(MovieRating $movieRating)
     {
-        //
+        return new MovieRatingResource($movieRating);
     }
 
     /**
@@ -48,7 +54,9 @@ class MovieRatingController extends Controller
      */
     public function update(Request $request, MovieRating $movieRating)
     {
-        //
+        $movieRating->update($request->only(['movie_id', 'user_id', 'rating']));
+
+        return new MovieRatingResource($movieRating);
     }
 
     /**
@@ -59,6 +67,49 @@ class MovieRatingController extends Controller
      */
     public function destroy(MovieRating $movieRating)
     {
-        //
+        $movieRating->delete();
+
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
+
+    /**
+     * Get movie rating by movie id.
+     *
+     * @param  int  $movieId
+     * @return \Illuminate\Http\Response
+     */
+    public function getMovieRatingsByMovieId(Request $request, $movieId){
+        //$movieRatings = MovieRating::where('movie_id', $movieId)->get();
+        $movieRatings = DB::table('movie_ratings')
+        ->where('movie_ratings.movie_id', '=', $movieId)
+        ->get();
+
+        return response()->json(new MovieRatingCollection($movieRatings), Response::HTTP_OK);
+    }
+
+    /**
+     * Get movie rating by user id.
+     *
+     * @param  int  $userId
+     * @return \Illuminate\Http\Response
+     */
+    public function getMovieRatingsByUserId(Request $request, $userId){
+        $movieRatings = MovieRating::where('user_id', $userId)->get();
+
+        return response()->json(new MovieRatingCollection($movieRatings), Response::HTTP_OK);
+    }
+
+    /**
+     * Get movie rating by user id and by movie id.
+     *
+     * @param  int  $userId
+     * @param  int  $movieId
+     * @return \Illuminate\Http\Response
+     */
+    public function getMovieRatingsByUserIdAndMovieId(Request $request, $movieId,  $userId){
+        $movieRating = MovieRating::where('movie_id', $movieId)->where('user_id', $userId)->get();
+
+        return response()->json(new MovieRatingCollection($movieRating), Response::HTTP_OK);
+    }
+
 }
