@@ -22,9 +22,9 @@ class MovieRatingFactory extends Factory
     public function definition()
     {
         return [
-            'Movie rating' => rand(1, 5),
-            'User id' => rand(1, 50),
-            'Movie id' => rand(1, 30)
+            'movie_rating' => rand(1, 5),
+            'user_id' => rand(1, 50),
+            'movie_id' => rand(1, 30)
         ];
     }
 }
