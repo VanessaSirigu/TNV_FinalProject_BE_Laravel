@@ -15,6 +15,9 @@ class CreateMovieRatingsTable extends Migration
     {
         Schema::create('movie_ratings', function (Blueprint $table) {
             $table->id();
+            $table->integer('Movie rating');
+            $table->integer('User id')->unsigned();
+            $table->integer('Movie id')->unsigned();
             $table->timestamps();
         });
     }
