@@ -29,7 +29,7 @@ class MovieRatingController extends Controller
      */
     public function store(Request $request)
     {
-        $movieRating = MovieRating::create($request->only(['movie_id', 'user_id', 'rating']));
+        $movieRating = MovieRating::create($request->only(['movie_id', 'user_id', 'movie_rating']));
 
         return new MovieRatingResource($movieRating);
     }
@@ -54,7 +54,7 @@ class MovieRatingController extends Controller
      */
     public function update(Request $request, MovieRating $movieRating)
     {
-        $movieRating->update($request->only(['movie_id', 'user_id', 'rating']));
+        $movieRating->update($request->only(['movie_id', 'user_id', 'movie_rating']));
 
         return new MovieRatingResource($movieRating);
     }
