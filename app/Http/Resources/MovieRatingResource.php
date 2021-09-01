@@ -16,7 +16,6 @@ class MovieRatingResource extends JsonResource
     {
         //return parent::toArray($request);
         return [
-            'id' => $this->id,
             'movie_rating' => $this->movie_rating,
             'movie_id' => $this->movie_id,
             'user_id' => $this->user_id,

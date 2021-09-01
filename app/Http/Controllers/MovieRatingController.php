@@ -79,10 +79,12 @@ class MovieRatingController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function getMovieRatingsByMovieId(Request $request, $movieId){
-        //$movieRatings = MovieRating::where('movie_id', $movieId)->get();
-        $movieRatings = DB::table('movie_ratings')
+        $movieRatings = MovieRating::where('movie_id', $movieId)->get();
+
+        //Metodo alternativo per effettuare una query al DB
+        /*$movieRatings = DB::table('movie_ratings')
         ->where('movie_ratings.movie_id', '=', $movieId)
-        ->get();
+        ->get();*/
 
         return response()->json(new MovieRatingCollection($movieRatings), Response::HTTP_OK);
     }

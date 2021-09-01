@@ -19,7 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//TODO: search for changes the api routes name from api/ to movieratingapi/
 Route::apiResource('/movie_ratings', MovieRatingController::class);
 
 //Routes for the movie rating API
