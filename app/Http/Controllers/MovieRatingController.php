@@ -7,7 +7,7 @@ use App\Http\Resources\MovieRatingResource;
 use App\Models\MovieRating;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class MovieRatingController extends Controller
 {
@@ -29,6 +29,16 @@ class MovieRatingController extends Controller
      */
     public function store(Request $request)
     {
+        $validatedData = Validator::make($request->all(), [
+            'movie_id' => 'required|integer',
+            'user_id' => 'required|integer',
+            'movie_rating' => 'required|integer|between:1,5'
+        ]);
+
+        if ($validatedData->fails()) {
+            return response()->json($validatedData->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
         $movieRating = MovieRating::create($request->only(['movie_id', 'user_id', 'movie_rating']));
 
         return new MovieRatingResource($movieRating);
@@ -54,6 +64,16 @@ class MovieRatingController extends Controller
      */
     public function update(Request $request, MovieRating $movieRating)
     {
+        $validatedData = Validator::make($request->all(), [
+            'movie_id' => 'required|integer',
+            'user_id' => 'required|integer',
+            'movie_rating' => 'required|integer|between:1,5'
+        ]);
+
+        if ($validatedData->fails()) {
+            return response()->json($validatedData->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
         $movieRating->update($request->only(['movie_id', 'user_id', 'movie_rating']));
 
         return new MovieRatingResource($movieRating);
@@ -78,13 +98,9 @@ class MovieRatingController extends Controller
      * @param  int  $movieId
      * @return \Illuminate\Http\Response
      */
-    public function getMovieRatingsByMovieId(Request $request, $movieId){
+    public function getMovieRatingsByMovieId(Request $request, $movieId)
+    {
         $movieRatings = MovieRating::where('movie_id', $movieId)->get();
-
-        //Metodo alternativo per effettuare una query al DB
-        /*$movieRatings = DB::table('movie_ratings')
-        ->where('movie_ratings.movie_id', '=', $movieId)
-        ->get();*/
 
         return response()->json(new MovieRatingCollection($movieRatings), Response::HTTP_OK);
     }
@@ -95,7 +111,8 @@ class MovieRatingController extends Controller
      * @param  int  $userId
      * @return \Illuminate\Http\Response
      */
-    public function getMovieRatingsByUserId(Request $request, $userId){
+    public function getMovieRatingsByUserId(Request $request, $userId)
+    {
         $movieRatings = MovieRating::where('user_id', $userId)->get();
 
         return response()->json(new MovieRatingCollection($movieRatings), Response::HTTP_OK);
@@ -108,10 +125,10 @@ class MovieRatingController extends Controller
      * @param  int  $movieId
      * @return \Illuminate\Http\Response
      */
-    public function getMovieRatingsByUserIdAndMovieId(Request $request, $movieId,  $userId){
+    public function getMovieRatingsByUserIdAndMovieId(Request $request, $movieId,  $userId)
+    {
         $movieRating = MovieRating::where('movie_id', $movieId)->where('user_id', $userId)->get();
 
         return response()->json(new MovieRatingCollection($movieRating), Response::HTTP_OK);
     }
-
 }
